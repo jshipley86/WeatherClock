@@ -25,7 +25,9 @@ function updateClock()
 		year: 'numeric'
 	} ));
 
-	$( 'hour' ).update( fmtTimePart( date.getHours() ));
+	var day_hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
+
+	$( 'hour' ).update( fmtTimePart( day_hours));
 	$( 'minute' ).update( fmtTimePart( date.getMinutes() ));
 	
 	updateClock.delay( 1 );
@@ -35,6 +37,18 @@ function fmtTimePart( part )
 {
 	return ( '0' + part ).slice( -2 );
 }
+
+function fmtDayPart( part )
+{
+	weekday = ['Su\n','Mo\n','Tu\n','We\n','Th\n','Fr\n','Sa\n']
+	for (i=0; i<=6;i++){
+		if (part == i){
+			partn = weekday[i]
+			return (partn );
+		}
+	}
+}
+
 
 function updateWeather()
 {
@@ -85,7 +99,8 @@ function parseForecast( json, numItems)
 			idx:		i,
 			temp:		Math.round( item.main.temp ),
 			humidity:	Math.round( item.main.humidity ),
-			hour: 		fmtTimePart( new Date( item.dt * 1000 ).getHours() )
+//			hour: 		fmtTimePart( new Date( item.dt * 1000 ).getHours() )
+			hour: 		(fmtDayPart(new Date( item.dt * 1000 ).getDay())+fmtDatePart(new Date( item.dt * 1000 ).getDate() + '.'+(new Date( item.dt * 1000 ).getMonth()+1)+'.'))
 		} ));
 		
 		updateWeatherIcon( item.weather, $( 'forecast' + i ).down( '.icon' ));
